@@ -37,120 +37,120 @@
 using namespace std;
 
 int _read(string file) {
-  int sec = ERR;
-  ifstream f(file);
-  if (!f)
-    return ERR;
-  f >> sec;
-  if (f.bad())
-    return ERR;
-  f.close();
-  return sec;
+        int sec = ERR;
+        ifstream f(file);
+        if (!f)
+                return ERR;
+        f >> sec;
+        if (f.bad())
+                return ERR;
+        f.close();
+        return sec;
 }
 
 int _write(string file, int sec) {
-  ofstream f(file);
-  if (!f)
-    return ERR;
-  f << sec;
-  if (f.bad())
-    return ERR;
-  f.close();
-  return 0;
+        ofstream f(file);
+        if (!f)
+                return ERR;
+        f << sec;
+        if (f.bad())
+                return ERR;
+        f.close();
+        return 0;
 }
 
 int read_since_epoch() {
-  return _read(RTC_SYS_FILE);
+        return _read(RTC_SYS_FILE);
 }
 
 int write(int sec) {
-  return _write(OFFSET_FILE, sec);
+        return _write(OFFSET_FILE, sec);
 }
 
 int read() {
-  return _read(OFFSET_FILE);
+        return _read(OFFSET_FILE);
 }
 
 int now() {
-  time_t t;
-  struct tm tm;
+        time_t t;
+        struct tm tm;
 
-  time(&t);
-  localtime_r(&t, &tm);
-  return mktime(&tm);
+        time(&t);
+        localtime_r(&t, &tm);
+        return mktime(&tm);
 }
 
 int store() {
-	int seconds = 0;
-	int epoch_since = 0;
-  int ret = ERR;
+        int seconds = 0;
+        int epoch_since = 0;
+        int ret = ERR;
 
-  seconds = now();
+        seconds = now();
 
-	if (seconds > 0) {
-		epoch_since = read_since_epoch();
-		if (epoch_since < 0) {
-			LOG_ERR("Failed to read epoch_since\n");
-		} else {
-      LOG_DEBUG("Time now is %i\n", seconds);
-      LOG_DEBUG("Epoch since is %i\n", epoch_since);
-			seconds -= epoch_since;
-      LOG_DEBUG("Offset is %i\n", seconds);
-			ret = write(seconds);
-			if (ret != ERR) {
-        LOG_DEBUG("Offset file written successfully\n");
-			} else {
-				LOG_ERR("Failed to write offset file!\n");
-			}
-		}
-	}
+        if (seconds > 0) {
+                epoch_since = read_since_epoch();
+                if (epoch_since < 0) {
+                        LOG_ERR("Failed to read epoch_since\n");
+                } else {
+                        LOG_DEBUG("Time now is %i\n", seconds);
+                        LOG_DEBUG("Epoch since is %i\n", epoch_since);
+                        seconds -= epoch_since;
+                        LOG_DEBUG("Offset is %i\n", seconds);
+                        ret = write(seconds);
+                        if (ret != ERR) {
+                                LOG_DEBUG("Offset file written successfully\n");
+                        } else {
+                                LOG_ERR("Failed to write offset file!\n");
+                        }
+                }
+        }
 
-	return ret;
+        return ret;
 }
 
 int restore() {
-	struct timeval tv;
-	int time_adjust = 0;
-	int epoch_since = 0;
-	int ret = ERR;
+        struct timeval tv;
+        int time_adjust = 0;
+        int epoch_since = 0;
+        int ret = ERR;
 
-  time_adjust = read();
+        time_adjust = read();
 
-	epoch_since = read_since_epoch();
-	if (epoch_since == ERR) {
-		LOG_ERR("Failed to read epoch_since\n");
-	} else {
-    LOG_DEBUG("Offset is %i\n", time_adjust);
-    LOG_DEBUG("Epoch since is %i\n", epoch_since);
-    LOG_DEBUG("Final time is %i\n", epoch_since + time_adjust);
-		tv.tv_sec = epoch_since + time_adjust;
-		tv.tv_usec = 0;
-		ret = settimeofday(&tv, NULL);
-		if (ret != 0) {
-			LOG_ERR("Failed to set time! are you root?\n");
-		} else {
-			LOG_DEBUG("Time restored!\n");
-		}
-	}
+        epoch_since = read_since_epoch();
+        if (epoch_since == ERR) {
+                LOG_ERR("Failed to read epoch_since\n");
+        } else {
+                LOG_DEBUG("Offset is %i\n", time_adjust);
+                LOG_DEBUG("Epoch since is %i\n", epoch_since);
+                LOG_DEBUG("Final time is %i\n", epoch_since + time_adjust);
+                tv.tv_sec = epoch_since + time_adjust;
+                tv.tv_usec = 0;
+                ret = settimeofday(&tv, NULL);
+                if (ret != 0) {
+                        LOG_ERR("Failed to set time! are you root?\n");
+                } else {
+                        LOG_DEBUG("Time restored!\n");
+                }
+        }
 
-	return ret;
+        return ret;
 }
 
 void usage(string file) {
-  cerr << "Usage: " << file << " store|restore" << endl;
+        cerr << "Usage: " << file << " store|restore" << endl;
 }
 
 int main(int argc, char const *argv[]) {
-  if (argc < 2) {
-    usage(argv[0]);
-    return 1;
-  }
+        if (argc < 2) {
+                usage(argv[0]);
+                return 1;
+        }
 
-  if (strcmp(argv[1], "restore") == 0)
-    return restore();
-  else if (strcmp(argv[1], "store") == 0)
-    return store();
+        if (strcmp(argv[1], "restore") == 0)
+                return restore();
+        else if (strcmp(argv[1], "store") == 0)
+                return store();
 
-  usage(argv[0]);
-  return 1;
+        usage(argv[0]);
+        return 1;
 }
