@@ -1,0 +1,15 @@
+Source: timekeeper
+Section: admin
+Priority: optional
+Build-Depends: cmake (>= 2.8.10),
+               debhelper (>= 9)
+Maintainer: Marius Gripsgard <marius@ubports.com>
+Standards-Version: 3.9.5
+Homepage: https://github.com/ubports/timekeeper
+
+Package: timekeeper
+Architecture: armhf arm64 i386 amd64
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: utility to keep/restore RTC offset for Qualcomm devices
+ this is needed on devices with read only RTC drivers
