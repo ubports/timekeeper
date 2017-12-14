@@ -20,6 +20,7 @@
 #include <cstring>
 #include <sys/time.h>
 #include <sys/stat.h>
+#include <cerrno>
 
 #define RTC_SYS_FILE "/sys/class/rtc/rtc0/since_epoch"
 // TODO be able to set offset file using a envar (or argument)
