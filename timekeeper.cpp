@@ -19,10 +19,12 @@
 #include <iostream>
 #include <cstring>
 #include <sys/time.h>
+#include <sys/stat.h>
 
 #define RTC_SYS_FILE "/sys/class/rtc/rtc0/since_epoch"
 // TODO be able to set offset file using a envar (or argument)
-#define OFFSET_FILE "/home/phablet/.cache/timekeeper_offset"
+#define DATA_DIR "/data/time/"
+#define OFFSET_FILE DATA_DIR "timekeep"
 
 // Remove comment to enable debug
 //#define DEBUG
@@ -49,6 +51,13 @@ int _read(string file) {
 }
 
 int _write(string file, int sec) {
+        if (mkdir(DATA_DIR, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == -1)
+        {
+                if( errno != EEXIST ) {
+                        LOG_ERR("Cannot create data directory!\n");
+                        return ERR;
+                }
+        }
         ofstream f(file.c_str());
         if (!f)
                 return ERR;
