@@ -38,7 +38,7 @@ using namespace std;
 
 int _read(string file) {
         int sec = ERR;
-        ifstream f(file);
+        ifstream f(file.c_str());
         if (!f)
                 return ERR;
         f >> sec;
@@ -49,7 +49,7 @@ int _read(string file) {
 }
 
 int _write(string file, int sec) {
-        ofstream f(file);
+        ofstream f(file.c_str());
         if (!f)
                 return ERR;
         f << sec;
