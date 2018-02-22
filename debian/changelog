@@ -1,5 +1,5 @@
-timekeeper (0.1) UNRELEASED; urgency=medium
+timekeeper (0.1) xenial; urgency=medium
 
   * initial release
 
- -- Marius Gripsgard <marius@ubports.com>  Thu, 14 Dec 2017 09:53:50 +0100
+ -- Marius Gripsgard <marius@ubports.com> Thu, 14 Dec 2017 09:53:50 +0100
