@@ -1,3 +1,9 @@
+timekeeper (0.2) xenial; urgency=medium
+
+  * Fix for timekeeper not stopping on xenial
+
+ -- Dalton Durst <dalton@ubports.com> Sat, 14 Apr 2018 19:16:00 -0500
+
 timekeeper (0.1) xenial; urgency=medium
 
   * initial release
